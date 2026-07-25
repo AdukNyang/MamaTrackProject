@@ -1,0 +1,8 @@
+# Terminal 1 — API
+npm run server:dev
+
+# Terminal 2 — Expo app
+npm start
+
+npm run db:migrate      # apply TypeORM migration to Neon
+npm run db:seed:all     # seed supervisor + demo data
