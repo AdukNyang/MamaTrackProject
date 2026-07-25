@@ -44,9 +44,6 @@ example
 
 
 #Ignore folder of Chigo and Aduk
-# chigo
-/src/app
-/src/components
 # aduk
 mamatrack_schema.sql
 /scripts
