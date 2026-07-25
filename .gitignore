@@ -48,8 +48,6 @@ example
 /src/app
 /src/components
 # aduk
-/src/constants
-/src/lib
 mamatrack_schema.sql
 /scripts
 
