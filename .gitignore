@@ -46,19 +46,17 @@ example
 #Ignore folder of Chigo and Aduk
 # aduk
 mamatrack_schema.sql
-/scripts
 
 # server contributions
 # Evan
 
 
 
-#Kendra
+#Yai
 /server/src/common
-/server/src/dashboard
-/server/src/entities
 /server/src/lib
-/server/src/migrations
+/scripts
+
 
 
 
