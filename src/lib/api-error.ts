@@ -46,6 +46,3 @@ export function validateVerificationCode(code: string) {
 
   return { trimmedCode };
 }
-
-// Backwards-compatible aliases for existing imports
-export const getConvexErrorMessage = getApiErrorMessage;

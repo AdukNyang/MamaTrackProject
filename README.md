@@ -1,201 +1,88 @@
 # MamaTrack
 
-MamaTrack is a mobile app for community health workers and supervisors to manage antenatal patients, visits, risk flags, and SMS outreach. The frontend is built with [Expo](https://expo.dev) (React Native) and the backend runs on [Convex](https://convex.dev) with password + email OTP authentication.
+A mobile app for community health workers and supervisors to track antenatal patients, visits, risk flags, and SMS outreach.
 
-## Quick start (shared backend)
+Built with Expo (React Native) and a NestJS API backed by Postgres.
 
-Use this path if someone on the project gave you a `.env.local` file. **You do not need a Convex account.**
+## What you need
 
-### Prerequisites
+- Node.js 18+
+- npm
+- A Postgres database (we use [Neon](https://neon.tech))
+- For mobile testing: [Expo Go](https://expo.dev/go), or Android Studio / Xcode for emulators
 
-- **Node.js** 18 or later
-- **npm**
-- For mobile: [Expo Go](https://expo.dev/go) on a device, or Android Studio / Xcode for emulators
+## Setup
 
-### Setup
-
-1. Clone or download this repo.
-
-2. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Place the `.env.local` file you were given in the project root (same folder as `package.json`).
-
-   Do **not** commit this file — it contains connection details for the shared backend.
-
-4. Start the app:
-
-   ```bash
-   npm start
-   ```
-
-5. Open the app:
-   - **Web:** press `w` or run `npm run web`
-   - **Android:** press `a` or run `npm run android`
-   - **iOS:** press `i` or run `npm run ios` (macOS only)
-   - **Physical device:** scan the QR code with Expo Go
-
-That is all you need. The app talks to the shared Convex deployment over the internet — no local backend setup required.
-
-### Signing in
-
-Ask the project owner for the test login email and password. After you enter them, an 8-digit OTP is sent to that email address — you need access to that inbox (or the owner can forward the code) to finish signing in.
-
----
-
-## Maintainer setup (Convex project owner)
-
-Use this path only if you are setting up or maintaining the shared backend. Everyone else can skip this section.
-
-### Prerequisites
-
-- Everything in the quick start, plus:
-- A [Convex](https://www.convex.dev/) account
-- SMTP credentials for login OTP emails (Gmail app password, Mailtrap, etc.)
-
-### 1. Install dependencies
+1. Clone the repo and install dependencies:
 
 ```bash
 npm install
+npm install --prefix server
 ```
 
-### 2. Create the Convex deployment
-
-```bash
-npm run convex:dev
-```
-
-Log in to Convex when prompted and create or link a project. Leave this running while you work on backend changes.
-
-### 3. Create `.env.local`
-
-Copy the example file and fill in values from the `convex dev` output:
+2. Copy the env file and fill in your values:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Set at minimum:
+You'll need at least:
 
-- `CONVEX_DEPLOYMENT`
-- `EXPO_PUBLIC_CONVEX_URL`
-- `EXPO_PUBLIC_CONVEX_SITE_URL`
-- `SITE_URL`
+- `DATABASE_URL` — your Postgres connection string
+- `JWT_SECRET` — run `openssl rand -hex 32` to generate one
+- `EXPO_PUBLIC_API_URL` — where the app finds the API (see below)
+- SMTP settings if you want login verification emails to work
 
-Add your SMTP settings in the same file (see `.env.local.example`).
+For a phone on the same Wi‑Fi, set `EXPO_PUBLIC_API_URL` to your computer's IP, e.g. `http://192.168.1.10:3000/api`. For web or a simulator, `http://localhost:3000/api` is fine.
 
-### 4. One-time backend configuration
-
-```bash
-# JWT keys for Convex Auth
-npm run convex:auth:keys
-
-# Push SMTP + SITE_URL to Convex
-npm run convex:env:sync
-```
-
-### 5. Seed the database
+3. Set up the database:
 
 ```bash
-# Supervisor account only
-npm run convex:seed
-
-# Demo patients, visits, risk flags, etc.
-npm run convex:seed:demo
-
-# Or both at once
-npm run convex:seed:all
+npm run db:migrate
+npm run db:seed:all
 ```
 
-Default seeded supervisor credentials:
+This creates a supervisor account you can sign in with:
 
-| Field    | Value                  |
-| -------- | ---------------------- |
-| Email    | `sam.dv.350@gmail.com` |
-| Password | `admin123`             |
+| | |
+|---|---|
+| Email | `sam.dv.350@gmail.com` |
+| Password | `admin123` |
 
-### 6. Share access with others
+After login, check the email inbox for the 8-digit verification code.
 
-Send collaborators a copy of `.env.local` through a private channel (email, Slack DM, password manager, etc.). **Do not commit it to git.**
+## Run the app
 
-Also share:
+You need two terminals.
 
-- The test login email and password
-- How to reach the OTP inbox (or agree to forward codes during demos)
-
-Collaborators then follow [Quick start](#quick-start-shared-backend) above.
-
-### Running locally as maintainer
-
-When changing backend code, use two terminals:
-
-**Terminal 1 — Convex**
+**Terminal 1 — API server**
 
 ```bash
-npm run convex:dev
+npm run server:dev
 ```
 
-**Terminal 2 — Expo**
+**Terminal 2 — Expo app**
 
 ```bash
 npm start
 ```
 
-If you are only working on the frontend and the backend is already deployed, you can run `npm start` alone.
+Then open the app on web (`w`), Android (`a`), iOS (`i`), or scan the QR code with Expo Go.
 
-## Available scripts
+## Useful commands
 
-| Command | Description |
-| ------- | ----------- |
+| Command | What it does |
+|---|---|
 | `npm start` | Start the Expo dev server |
-| `npm run web` | Start Expo for web |
-| `npm run android` | Start Expo for Android |
-| `npm run ios` | Start Expo for iOS |
-| `npm run convex:dev` | Run Convex in dev mode (maintainers only) |
-| `npm run convex:deploy` | Deploy Convex functions to production |
-| `npm run convex:env:sync` | Push SMTP and site URL from `.env.local` to Convex |
-| `npm run convex:auth:keys` | Generate and set JWT keys for Convex Auth |
-| `npm run convex:seed` | Create the default supervisor account |
-| `npm run convex:seed:demo` | Seed demo clinic data |
-| `npm run convex:seed:all` | Seed supervisor + demo data |
+| `npm run server:dev` | Start the API in watch mode |
+| `npm run db:migrate` | Run database migrations |
+| `npm run db:seed:all` | Seed supervisor + demo data |
 | `npm run lint` | Run ESLint |
 
-## Project structure
+## Project layout
 
 ```
-mama-track/
-├── src/app/          # Expo Router screens and navigation
-├── src/components/   # Shared UI components
-├── src/lib/          # Client helpers (Convex, auth, storage)
-├── convex/           # Backend schema, queries, mutations, auth
-├── assets/           # Images and icons
-└── scripts/          # Convex setup helpers
+src/app/       Expo Router screens
+src/components Shared UI
+server/        NestJS API
 ```
-
-## Troubleshooting
-
-**`Missing EXPO_PUBLIC_CONVEX_URL`**
-
-Make sure `.env.local` is in the project root and contains `EXPO_PUBLIC_CONVEX_URL`. Restart the Expo dev server after adding or changing env vars.
-
-**Login fails after entering password**
-
-The shared backend must have SMTP configured (maintainer runs `npm run convex:env:sync`). Confirm you are using the test account credentials from the project owner and can receive the OTP email.
-
-**App loads but data looks empty**
-
-Ask the maintainer to run `npm run convex:seed:all` on the shared deployment.
-
-**Backend changes not showing up (maintainers)**
-
-Run `npm run convex:dev` so function changes sync to the deployment.
-
-## Learn more
-
-- [Expo documentation](https://docs.expo.dev/)
-- [Expo Router](https://docs.expo.dev/router/introduction/)
-- [Convex documentation](https://docs.convex.dev/)
-- [Convex Auth](https://labs.convex.dev/auth)
