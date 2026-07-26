@@ -50,11 +50,8 @@ mamatrack_schema.sql
 
 # server contributions
 # Evan
-/server/src/access
-/server/src/antenatal-visits
-/server/src/auth
-/server/src/chw-users
-/server/src/users
+
+
 
 #Kendra
 /server/src/common
