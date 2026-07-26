@@ -1,0 +1,35 @@
+{
+  "name": "mama-track-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main.js",
+    "migration:run": "tsx src/scripts/migrate.ts",
+    "db:seed": "tsx src/scripts/seed.ts",
+    "db:seed:all": "tsx src/scripts/seed.ts --all"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.3",
+    "@nestjs/core": "^11.1.3",
+    "@nestjs/platform-express": "^11.1.3",
+    "@nestjs/typeorm": "^11.0.0",
+    "dotenv": "^16.5.0",
+    "jose": "^6.0.11",
+    "nodemailer": "^7.0.13",
+    "pg": "^8.16.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "typeorm": "^0.3.24"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.5",
+    "@nestjs/schematics": "^11.0.5",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.15.21",
+    "@types/nodemailer": "^6.4.17",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}

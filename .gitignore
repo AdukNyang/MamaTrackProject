@@ -48,5 +48,22 @@ example
 mamatrack_schema.sql
 /scripts
 
+# server contributions
+# Evan
+/server/src/access
+/server/src/antenatal-visits
+/server/src/auth
+/server/src/chw-users
+/server/src/users
+
+#Kendra
+/server/src/common
+/server/src/dashboard
+/server/src/entities
+/server/src/lib
+/server/src/migrations
+
+
+
 # convex
 /convex
