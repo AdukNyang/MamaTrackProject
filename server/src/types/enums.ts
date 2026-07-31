@@ -72,3 +72,25 @@ export enum SmsDeliveryStatus {
   FAILED = 'failed',
   UNDELIVERED = 'undelivered',
 }
+
+export enum CheckInPeriod {
+  MORNING = 'morning',
+  EVENING = 'evening',
+}
+
+export enum CheckInMood {
+  GREAT = 'great',
+  OKAY = 'okay',
+  UNWELL = 'unwell',
+  CONCERNING = 'concerning',
+}
+
+export enum RiskReporterType {
+  CHW = 'chw',
+  PATIENT = 'patient',
+}
+
+export enum PatientReminderType {
+  CHECK_IN_MORNING = 'check_in_morning',
+  CHECK_IN_EVENING = 'check_in_evening',
+}

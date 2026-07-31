@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { ChwUsersModule } from './chw-users/chw-users.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { entities } from './entities';
+import { PatientCheckInsModule } from './patient-check-ins/patient-check-ins.module';
+import { PatientCareModule } from './patient-care/patient-care.module';
 import { PatientsModule } from './patients/patients.module';
 import { RiskFlagsModule } from './risk-flags/risk-flags.module';
 import { SmsLogsModule } from './sms-logs/sms-logs.module';
@@ -38,6 +40,8 @@ function getDatabaseUrl(): string {
     DashboardModule,
     UsersModule,
     PatientsModule,
+    PatientCheckInsModule,
+    PatientCareModule,
     ChwUsersModule,
     AntenatalVisitsModule,
     RiskFlagsModule,

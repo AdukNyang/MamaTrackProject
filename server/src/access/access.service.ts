@@ -14,6 +14,8 @@ export class AccessService {
     private readonly supervisorRepo: Repository<Supervisor>,
     @InjectRepository(ChwUser)
     private readonly chwRepo: Repository<ChwUser>,
+    @InjectRepository(Patient)
+    private readonly patientRepo: Repository<Patient>,
   ) {}
 
   getCurrentSupervisor(auth: RequestUser) {
@@ -29,6 +31,12 @@ export class AccessService {
 
   getCurrentChw(auth: RequestUser) {
     return this.chwRepo.findOne({
+      where: { authUserId: auth.userId },
+    });
+  }
+
+  getCurrentPatient(auth: RequestUser) {
+    return this.patientRepo.findOne({
       where: { authUserId: auth.userId },
     });
   }
@@ -49,10 +57,23 @@ export class AccessService {
     return chw.id;
   }
 
+  async requireCurrentPatientId(auth: RequestUser) {
+    const patient = await this.getCurrentPatient(auth);
+    if (!patient) {
+      throw new ForbiddenException('Patient access required');
+    }
+    return patient.id;
+  }
+
   async canAccessPatient(
     auth: RequestUser,
-    patient: Pick<Patient, 'clinicId' | 'chwId'>,
+    patient: Pick<Patient, 'id' | 'clinicId' | 'chwId'>,
   ) {
+    const currentPatient = await this.getCurrentPatient(auth);
+    if (currentPatient?.id === patient.id) {
+      return true;
+    }
+
     const supervisorClinicId = await this.getCurrentSupervisorClinicId(auth);
     if (supervisorClinicId && supervisorClinicId === patient.clinicId) {
       return true;
@@ -60,5 +81,13 @@ export class AccessService {
 
     const chw = await this.getCurrentChw(auth);
     return chw?.id === patient.chwId;
+  }
+
+  async requirePatientAccess(auth: RequestUser, patientId: string) {
+    const patient = await this.patientRepo.findOne({ where: { id: patientId } });
+    if (!patient || !(await this.canAccessPatient(auth, patient))) {
+      throw new ForbiddenException('Not authorized to access this patient');
+    }
+    return patient;
   }
 }

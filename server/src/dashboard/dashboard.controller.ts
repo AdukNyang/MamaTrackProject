@@ -36,25 +36,39 @@ export class DashboardController {
     @CurrentUser() auth: RequestUser,
     @Query('resource') resource = 'workspace',
   ) {
-    const [supervisor, chw] = await Promise.all([
+    const [supervisor, chw, patient] = await Promise.all([
       this.accessService.getCurrentSupervisor(auth),
       this.accessService.getCurrentChw(auth),
+      this.accessService.getCurrentPatient(auth),
     ]);
 
-    const clinicId = supervisor?.clinicId ?? chw?.clinicId ?? null;
+    const clinicId = supervisor?.clinicId ?? chw?.clinicId ?? patient?.clinicId ?? null;
 
     if (resource === 'workspace') {
       const clinic = clinicId
         ? await this.clinicRepo.findOne({ where: { id: clinicId } })
         : null;
 
+      const role = supervisor
+        ? 'supervisor'
+        : chw
+          ? 'chw'
+          : patient
+            ? 'patient'
+            : 'unlinked';
+
       return {
-        role: supervisor ? 'supervisor' : chw ? 'chw' : 'unlinked',
+        role,
         supervisor: supervisor ? serializeDoc(supervisor) : null,
         chw: chw ? serializeDoc(chw) : null,
+        patient: patient ? serializeDoc(patient) : null,
         clinic: clinic ? serializeDoc(clinic) : null,
         clinicId,
       };
+    }
+
+    if (resource === 'overview' && patient) {
+      throw new BadRequestException('Use /patient-care for patient dashboard');
     }
 
     if (resource === 'overview') {

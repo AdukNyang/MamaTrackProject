@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 
 import { PatientRiskLevel, PatientStatus } from '@/types/enums';
+import { AuthUser } from './AuthUser';
 import { ChwUser } from './ChwUser';
 import { Clinic } from './Clinic';
 
@@ -18,6 +19,8 @@ import { Clinic } from './Clinic';
 @Index('idx_patients_clinic', ['clinicId'])
 @Index('idx_patients_risk_level', ['riskLevel'])
 @Index('idx_patients_status', ['status'])
+@Index('idx_patients_auth_user', ['authUserId'])
+@Index('idx_patients_email', ['email'])
 export class Patient {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -27,6 +30,15 @@ export class Patient {
 
   @Column({ name: 'clinic_id', type: 'uuid' })
   clinicId!: string;
+
+  @Column({ name: 'auth_user_id', type: 'uuid', nullable: true, unique: true })
+  authUserId?: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  email?: string | null;
+
+  @Column({ name: 'check_in_reminders_enabled', type: 'boolean', default: true })
+  checkInRemindersEnabled!: boolean;
 
   @Column({ name: 'full_name', type: 'text' })
   fullName!: string;
@@ -86,4 +98,8 @@ export class Patient {
   @ManyToOne(() => Clinic)
   @JoinColumn({ name: 'clinic_id' })
   clinic!: Clinic;
+
+  @ManyToOne(() => AuthUser, { nullable: true })
+  @JoinColumn({ name: 'auth_user_id' })
+  authUser?: AuthUser | null;
 }

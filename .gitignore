@@ -53,9 +53,6 @@ mamatrack_schema.sql
 
 
 #Yai
-/server/src/common
-/server/src/lib
-/scripts
 
 
 

@@ -13,9 +13,10 @@ export class UsersController {
 
   @Get('viewer')
   async viewer(@CurrentUser() auth: RequestUser) {
-    const [supervisor, chw] = await Promise.all([
+    const [supervisor, chw, patient] = await Promise.all([
       this.accessService.getCurrentSupervisor(auth),
       this.accessService.getCurrentChw(auth),
+      this.accessService.getCurrentPatient(auth),
     ]);
 
     return {
@@ -25,7 +26,14 @@ export class UsersController {
       },
       supervisor: supervisor ? serializeDoc(supervisor) : null,
       chw: chw ? serializeDoc(chw) : null,
-      role: supervisor ? 'supervisor' : chw ? 'chw' : 'unlinked',
+      patient: patient ? serializeDoc(patient) : null,
+      role: supervisor
+        ? 'supervisor'
+        : chw
+          ? 'chw'
+          : patient
+            ? 'patient'
+            : 'unlinked',
     };
   }
 }

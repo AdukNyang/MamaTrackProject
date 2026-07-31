@@ -8,7 +8,9 @@
     "start": "node dist/main.js",
     "migration:run": "tsx src/scripts/migrate.ts",
     "db:seed": "tsx src/scripts/seed.ts",
-    "db:seed:all": "tsx src/scripts/seed.ts --all"
+    "db:seed:all": "tsx src/scripts/seed.ts --all",
+    "reminders:morning": "tsx src/scripts/send-check-in-reminders.ts morning",
+    "reminders:evening": "tsx src/scripts/send-check-in-reminders.ts evening"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.3",

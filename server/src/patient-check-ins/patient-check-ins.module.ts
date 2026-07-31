@@ -3,18 +3,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AccessModule } from '@/access/access.module';
 import { AuthModule } from '@/auth/auth.module';
-import { AntenatalVisit } from '@/entities/AntenatalVisit';
-import { Patient } from '@/entities/Patient';
+import { PatientCheckIn } from '@/entities/PatientCheckIn';
 import { RiskFlag } from '@/entities/RiskFlag';
 
-import { RiskFlagsController } from './risk-flags.controller';
+import { PatientCheckInsController } from './patient-check-ins.controller';
 
 @Module({
   imports: [
     AuthModule,
     AccessModule,
-    TypeOrmModule.forFeature([RiskFlag, Patient, AntenatalVisit]),
+    TypeOrmModule.forFeature([PatientCheckIn, RiskFlag]),
   ],
-  controllers: [RiskFlagsController],
+  controllers: [PatientCheckInsController],
 })
-export class RiskFlagsModule {}
+export class PatientCheckInsModule {}

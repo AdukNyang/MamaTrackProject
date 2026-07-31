@@ -26,6 +26,15 @@ export class SmsLogsController {
     const supervisorClinicId =
       await this.accessService.getCurrentSupervisorClinicId(auth);
     const chw = await this.accessService.getCurrentChw(auth);
+    const patient = await this.accessService.getCurrentPatient(auth);
+
+    if (patient) {
+      const logs = await this.smsLogRepo.find({
+        where: { patientId: patient.id },
+        order: { sentAt: 'DESC' },
+      });
+      return serializeDocs(logs);
+    }
 
     const patients = supervisorClinicId
       ? await this.patientRepo.find({

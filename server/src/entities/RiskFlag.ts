@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { FlagSeverity, FlagStatus, FlagType } from '@/types/enums';
+import { FlagSeverity, FlagStatus, FlagType, RiskReporterType } from '@/types/enums';
 import { AntenatalVisit } from './AntenatalVisit';
 import { ChwUser } from './ChwUser';
 import { Patient } from './Patient';
@@ -22,6 +22,7 @@ import { Supervisor } from './Supervisor';
 @Index('idx_risk_flags_resolved_by', ['resolvedBy'])
 @Index('idx_risk_flags_status', ['status'])
 @Index('idx_risk_flags_severity', ['severity'])
+@Index('idx_risk_flags_reporter_type', ['reporterType'])
 export class RiskFlag {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -32,8 +33,16 @@ export class RiskFlag {
   @Column({ name: 'visit_id', type: 'uuid', nullable: true })
   visitId?: string | null;
 
-  @Column({ name: 'reported_by', type: 'uuid' })
-  reportedBy!: string;
+  @Column({ name: 'reported_by', type: 'uuid', nullable: true })
+  reportedBy?: string | null;
+
+  @Column({
+    name: 'reporter_type',
+    type: 'enum',
+    enum: RiskReporterType,
+    default: RiskReporterType.CHW,
+  })
+  reporterType!: RiskReporterType;
 
   @Column({ name: 'resolved_by', type: 'uuid', nullable: true })
   resolvedBy?: string | null;
@@ -81,9 +90,9 @@ export class RiskFlag {
   @JoinColumn({ name: 'visit_id' })
   visit?: AntenatalVisit | null;
 
-  @ManyToOne(() => ChwUser)
+  @ManyToOne(() => ChwUser, { nullable: true })
   @JoinColumn({ name: 'reported_by' })
-  reportedByChw!: ChwUser;
+  reportedByChw?: ChwUser | null;
 
   @ManyToOne(() => Supervisor, { nullable: true })
   @JoinColumn({ name: 'resolved_by' })
